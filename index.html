@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<title>temp</title>
+<html lang="en">
+<head>
+	<meta charset="utf-8"/>
+	<title>\/ :O Look there is stuff here! :D \/</title>
+	<style>
+	* {padding:0;margin:0;}
+	canvas { background: #eee; display: block; margin: 0 auto; }
+	</style>
+</head>
+<body>
+<h1 id ="coords"></h1>
+<canvas id ="myCanvas" width ="480" height ="320"></canvas>
+<script>
+	var x=240;
+	var y=160;
+	var canvas = document.getElementById("myCanvas");
+	var ctx = canvas.getContext("2d");
+
+	function draw(){
+		ctx.clearRect(0,0,canvas.width,canvas.height);
+		ctx.beginPath();
+		ctx.arc(x, y, 20, 0, Math.PI*2, false);
+		ctx.fillStyle = "green";
+		ctx.fill();
+		ctx.closePath();
+	}
+	setInterval(draw,10);
+
+</script>
+</body>
+</html>
