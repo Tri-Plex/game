@@ -1,33 +1,160 @@
 <!DOCTYPE html>
 <title>temp</title>
 <html lang="en">
+
 <head>
-	<meta charset="utf-8"/>
-	<title>\/ :O Look there is stuff here! :D \/</title>
+	<meta charset="utf-8" />
+	<p>\/ :O Look there is stuff here! :D \/</p>
 	<style>
-	* {padding:0;margin:0;}
-	canvas { background: #eee; display: block; margin: 0 auto; }
+		* {
+			padding: 0;
+			margin: 0;
+		}
+
+		canvas {
+			background: #eee;
+			display: block;
+			margin: 0 auto;
+		}
 	</style>
 </head>
+
+<div style="display:none;">
+</div>
+
 <body>
-<h1 id ="coords"></h1>
-<canvas id ="myCanvas" width ="480" height ="320"></canvas>
-<script>
-	var x=240;
-	var y=160;
-	var canvas = document.getElementById("myCanvas");
-	var ctx = canvas.getContext("2d");
+	<h1 id="coords"></h1>
+	<p id="log"></p>
+	<canvas id="myCanvas" width="1080" height="980"></canvas>
+	<script>
 
-	function draw(){
-		ctx.clearRect(0,0,canvas.width,canvas.height);
-		ctx.beginPath();
-		ctx.arc(x, y, 20, 0, Math.PI*2, false);
-		ctx.fillStyle = "green";
-		ctx.fill();
-		ctx.closePath();
-	}
-	setInterval(draw,10);
+		var canvas = document.getElementById("myCanvas");
+		var ctx = canvas.getContext("2d");
+		canvas.height = window.innerHeight;
+		canvas.width = window.innerWidth;
 
-</script>
+		//image stuff
+		const images = {};
+		images.player = new Image();
+		images.player.src = "Images/CharacterSpriteSheet.png";
+
+		const playerWidth = '180';
+		const playerHeight = '341.25';
+		//var keys = [];
+		var pressedKeys = {};
+		let playerFrameX = 0;
+		let playerFrameY = 0;
+		let playerX = 0;
+		let playerY = 0;
+		const playerSpeed = 6;
+		var motion = false;
+		var animationSpeed=150;
+
+		function drawSprite(img, sX, sY, sW, sH, dX, dY, dW, dH) {
+			ctx.drawImage(img, sX, sY, sW, sH, dX, dY, dW, dH);
+		}
+
+		function draw() {
+
+			keyLogic();
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			drawSprite(images.player, playerWidth * playerFrameX, playerHeight * playerFrameY, playerWidth, playerHeight, playerX, playerY, playerWidth, playerHeight);
+			ctx.beginPath();
+			ctx.fillStyle = "green";
+			ctx.fill();
+			ctx.closePath();
+			//log.textContent += pressedKeys;
+
+		}
+		function animate() {
+			if (motion == true) {
+				if (playerFrameX < 5) {
+					playerFrameX++;
+				}
+				else {
+					playerFrameX = 0;
+				}
+			}
+			else{
+				playerFrameX= false;
+			}
+		}
+		function keyLogic() {
+			if (pressedKeys["KeyW"]) {
+				motion = true;
+				if (pressedKeys["KeyA"]) {
+					playerFrameY = 7;
+					playerX -= Math.sqrt(2)/2;
+					playerY -= Math.sqrt(2)/2;
+				}
+				else if (pressedKeys["KeyD"]) {
+					playerFrameY = 6;
+					playerX += Math.sqrt(2)/2;
+					playerY -= Math.sqrt(2)/2;
+				}
+				else {
+					playerFrameY = 1;
+					playerY -= 1;
+				}
+			}
+			else if (pressedKeys["KeyS"]) {
+				motion = true;
+				if (pressedKeys["KeyA"]) {
+					playerFrameY = 4;
+					playerX -= Math.sqrt(2)/2;
+					playerY += Math.sqrt(2)/2;
+				}
+				else if (pressedKeys["KeyD"]) {
+					playerFrameY = 5;
+					playerX += Math.sqrt(2)/2;
+					playerY += Math.sqrt(2)/2;
+				}
+				else {
+					playerFrameY = 0;
+					playerY += 1;
+				}
+			}
+			else if (pressedKeys["KeyA"]) {
+				motion = true;
+				playerFrameY = 2;
+				playerX -= 1;
+			}
+			else if (pressedKeys["KeyD"]) {
+				motion = true;
+				playerFrameY = 3;
+				playerX += 1;
+			}
+			else{
+				motion = false;
+			}
+			if(pressedKeys["ShiftLeft"]){
+				animationSpeed = 100;
+			}
+			else{
+				animationSpeed = 150;
+			}
+		}
+		setInterval(animate, animationSpeed);
+		setInterval(draw, 5);
+
+		window.onkeyup = function(e) { pressedKeys[e.code] = false; }
+		window.onkeydown = function(e) { pressedKeys[e.code] = true; }
+		/*
+		document.addEventListener('keydown', logKeyDown);
+		document.addEventListener('keyup', logKeyUp);
+
+		function logKeyDown(e) {
+			if (keys.indexOf(e.code) == -1) {
+				keys.push(e.code);
+			}
+		}
+		function logKeyUp(e) {
+			if (keys.indexOf(e.code) > -1) {
+				keys.splice(e.code, 1);
+			}
+		}
+		*/
+	</script>
 </body>
+
 </html>
