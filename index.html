@@ -27,25 +27,15 @@
 </div>
 
 <body>
-    <script type="text/javascript">
-    window.onerror = function (msg, url, num) {
-    alert("Error: " + msg + "\nURL: " + url + "\nLine: " + num);
-    return true;
-    </script>
 	<h1 id="coords"></h1>
 	<p id="log"></p>
 	<canvas id="myCanvas" width="1080" height="980"></canvas>
     
-<<<<<<< HEAD
 	<script>
      window.onerror = function (msg, url, num) {
     alert("Error: " + msg + "\nURL: " + url + "\nLine: " + num);
     return true;
      }
-=======
-	<script    type="text/javascript">
-       
->>>>>>> 9bb2e09c5430643c6859015316dd8541b9159723
 		var canvas = document.getElementById("myCanvas");
 		var ctx = canvas.getContext("2d");
 		canvas.height = window.innerHeight;
@@ -64,19 +54,10 @@
 					[1,1,1,1,1,1],
 					[1,1,1,1,1,1],
 					[1,1,1,1,1,1]];
-<<<<<<< HEAD
         
 		var pressedKeys = {};
         
         const sqrttwo = Math.sqrt(2)/2;
-=======
-        //type,posx,posy,width,height
-        var obj = [[1,0,0,50,50,]];
-        //type,posx,posy,animationx, animationy, motion
-        let ai = [[1,Math.random()*1000,Math.random()*1000,0,0,0]];
-		var pressedKeys = {};
-        
->>>>>>> 9bb2e09c5430643c6859015316dd8541b9159723
 		let playerFrameX = 0;
 		let playerFrameY = 0;
 		let playerX = 0;
@@ -99,10 +80,7 @@
 		function draw() {
             
 			keyLogic();
-<<<<<<< HEAD
             aim();
-=======
->>>>>>> 9bb2e09c5430643c6859015316dd8541b9159723
             
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
             
@@ -121,14 +99,11 @@
                     ctx.rect(obj[i][1]+playerX,obj[i][2]+playerY,obj[i][3],obj[i][4]);
                    }
             }
-<<<<<<< HEAD
             for(var i = 0;i<ai.length;i++){
                 if(ai[i][0]==1){
                     drawSprite(images.player, playerWidth*ai[i][3], playerHeight*ai[i][4],playerWidth,playerHeight,ai[i][1]+playerX,ai[i][2]+playerY,playerWidth/2,playerHeight/2);
                 }
             }
-=======
->>>>>>> 9bb2e09c5430643c6859015316dd8541b9159723
             ctx.stroke();
 			drawSprite(images.player, playerWidth * playerFrameX, playerHeight * playerFrameY, playerWidth, playerHeight, centerX,                         canvas.height/2-(playerHeight/2), playerWidth/2, playerHeight/2);
             
@@ -164,7 +139,6 @@
             return true;
         }
         
-<<<<<<< HEAD
         function printMousePos() {
     var cursorX;
     var cursorY;
@@ -175,43 +149,25 @@
     document.getElementById('test').innerHTML = "x: " + cursorX + ", y: " + cursorY;
 }
         
-=======
->>>>>>> 9bb2e09c5430643c6859015316dd8541b9159723
 		function keyLogic() {
 			if (pressedKeys["KeyW"]) {
 				motion = true;
 				if (pressedKeys["KeyA"]) {
 					playerFrameY = 7;
-<<<<<<< HEAD
 					playerX += sqrttwo;
 					playerY += sqrttwo
                     if(collisionCheck()){
                       playerX -= sqrttwo;
 					playerY -= sqrttwo;  
-=======
-					playerX += Math.sqrt(2)/2;
-					playerY += Math.sqrt(2)/2;
-                    if(collisionCheck()){
-                      playerX -= Math.sqrt(2)/2;
-					playerY -= Math.sqrt(2)/2;  
->>>>>>> 9bb2e09c5430643c6859015316dd8541b9159723
                     }
 				}
 				else if (pressedKeys["KeyD"]) {
 					playerFrameY = 6;
-<<<<<<< HEAD
 					playerX -= sqrttwo;
 					playerY += sqrttwo;
                     if(collisionCheck()){
                       playerX += sqrttwo;
 					playerY -= sqrttwo;  
-=======
-					playerX -= Math.sqrt(2)/2;
-					playerY += Math.sqrt(2)/2;
-                    if(collisionCheck()){
-                      playerX += Math.sqrt(2)/2;
-					playerY -= Math.sqrt(2)/2;  
->>>>>>> 9bb2e09c5430643c6859015316dd8541b9159723
                     }
                    
                 }
@@ -229,19 +185,11 @@
 				motion = true;
 				if (pressedKeys["KeyA"]) {
 					playerFrameY = 4;
-<<<<<<< HEAD
 					playerX += sqrttwo;
 					playerY -= sqrttwo;
                     if(collisionCheck()){
                       playerX -= sqrttwo;
 					playerY += sqrttwo;  
-=======
-					playerX += Math.sqrt(2)/2;
-					playerY -= Math.sqrt(2)/2;
-                    if(collisionCheck()){
-                      playerX -= Math.sqrt(2)/2;
-					playerY += Math.sqrt(2)/2;  
->>>>>>> 9bb2e09c5430643c6859015316dd8541b9159723
                     }
                    
                 }
@@ -249,19 +197,11 @@
                 
 				else if (pressedKeys["KeyD"]) {
 					playerFrameY = 5;
-<<<<<<< HEAD
 					playerX -= sqrttwo;
 					playerY -= sqrttwo;
                     if(collisionCheck()){
                       playerX += sqrttwo;
 					playerY += sqrttwo;  
-=======
-					playerX -= Math.sqrt(2)/2;
-					playerY -= Math.sqrt(2)/2;
-                    if(collisionCheck()){
-                      playerX += Math.sqrt(2)/2;
-					playerY += Math.sqrt(2)/2;  
->>>>>>> 9bb2e09c5430643c6859015316dd8541b9159723
                     }
                    
                 }
@@ -313,7 +253,6 @@
 				animationSpeed = 150;
 			}
 		}
-<<<<<<< HEAD
         ///*
         function aim(){
                for(var i = 0; i<ai.length;i++){
@@ -372,62 +311,11 @@
                         }
                        }
                        document.getElementById("vars").innerHTML = "aix: "+(ai[i][1]+playerX)+" aiy: "+(ai[i][2]+playerY)+" cenx: "+(Math.abs(Math.abs(ai[i][1]+playerX)-(ai[i][6]+playerX)))+" ceny: "+(Math.abs(Math.abs(ai[i][2]+playerY)-(ai[i][7]+playerY)));
-=======
-        /*
-        function ai(){
-               for(let i = 0; i<ai.length;i++){
-                   if(ai[i][1]+PlayerX!=centerX || ai[i][2]+PlayerY != canvas.height/2-(playerHeight/2)){
-                      ai[i][5] = 1;
-                      if(ai[i][1]+PlayerX > centerX){
-                          if(ai[i][2]+PlayerY>centerY){
-                              ai[i][4]=7;
-                              ai[i][1]-= Math.sqrt(2)/2;
-                              ai[i][2]-= Math.sqrt(2)/2;
-                          }
-                          else if(ai[i][2]+PlayerY<centerY){
-                              ai[i][4]=6;
-                              ai[i][1]-= Math.sqrt(2)/2;
-                              ai[i][2]+= Math.sqrt(2)/2;
-                          }
-                          else{
-                              ai[i][4]=1;
-                              ai[i][1]-=1;
-                          }
-                        }
-                       else if(ai[i][1] < centerX){
-                           if(ai[i][2] >centerY){
-                               ai[i][4]=4;
-                               ai[i][1]+=Math.sqrt(2)/2;
-                               ai[i][2]-=Math.sqrt(2)/2;
-                           }
-                           else if(ai[i][2]<centerY){
-                              ai[i][4]=5;
-                               ai[i][1]+=Math.sqrt(2)/2;
-                               ai[i][2]+=Math.sqrt(2)/2;
-                           }
-                           else{
-                            ai[i][4]=0;
-                               ai[i][1]+=1;
-                           }
-                       }
-                       else if(ai[i][2]>centerY){
-                           ai[i][4]=2;
-                           ai[i][2]-=1;
-                       }
-                       else if(ai[i][2]<centerY){
-                           ai[i][4]=3;
-                           ai[i][2]+=1;
-                       }
->>>>>>> 9bb2e09c5430643c6859015316dd8541b9159723
                       }
                    
                }
         }
-<<<<<<< HEAD
         //*/
-=======
-        */
->>>>>>> 9bb2e09c5430643c6859015316dd8541b9159723
 		setInterval(animate, animationSpeed);
 		setInterval(draw, 5);
 
