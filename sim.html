@@ -32,6 +32,7 @@
 	<canvas id="myCanvas" width="1080" height="980"></canvas>
     
 	<script>
+        let scale = 5;
         let delay = 0;
         let selectobj = 0;
         var dx = 0;
@@ -42,10 +43,10 @@
 		canvas.height = window.innerHeight;
 		canvas.width = window.innerWidth;
         //mass[0],x[1],y[2],force[3],forceangle[4],vel[5],velangle[6],frictionk[7],frictions[8],touch[9]
-        var obj = [[5, 0, canvas.height-size-5, 0, 90*(Math.PI/180), 100*scale,60*Math.PI/180,0.5,0.7,false]];
+        var obj = [[5, 0, canvas.height-(5/5*scale)-5, 0, 90*(Math.PI/180), 10*scale,60*Math.PI/180,0.5,0.7,false]];
         
         const rate = 0.005
-        let scale = 5;
+
         //var mass = 5;
         //let size = mass/5*scale;
         //var x =0;
@@ -80,40 +81,44 @@
             
             
             for(let i = 0; i<obj.length;i++){
-             update(obj[i]);   
+             update(i);   
             }
             
                
         }
         
         
-        function update(let ob){
+        function update(i){
             
      
 		
-        let mass = ob[0];
+        let mass = obj[i][0];
         let size = mass/5*scale;
-        var x =ob[1];
-        var y = ob[2];
+        var x =obj[i][1];
+        var y = obj[i][2];
         
-        let force = ob[3];
-        let forceangle =ob[4];
+        let force = obj[i][3];
+        let forceangle =obj[i][4];
         let forcex = force*Math.cos(forceangle);
         let forcey = force*Math.sin(forceangle)+(mass*g);
         
-        let angle = ob[6];
-        let vel = ob[5];
+        let angle = obj[i][6];
+        let vel = obj[i][5];
         let velx = vel*Math.cos(angle);
         var vely = vel*Math.sin(angle);
         
-        let frictionk = ob[7];
-        let frictions = ob[8];
-        let touch = ob[9];
+        let frictionk = obj[i][7];
+        let frictions = obj[i][8];
+        let touch = obj[i][9];
             
             ctx.font = "10px Arial";
             ctx.fillText("Diplacement X= "+Math.round((x-3)/scale)+"m", 10, 50);
             ctx.font = "10px Arial";
             ctx.fillText("Diplacement Y= "+Math.round(-1*(y-canvas.height)/scale) + "m", 10, 60);
+            ctx.fillText("Vel: "+Math.round((vel)/scale)+"m/s", 10, 70);
+            ctx.fillText("Velx: "+Math.round((velx)/scale)+"m/s", 10, 80);
+            ctx.fillText("Vely: "+Math.round((vely)/scale)+"m/s", 10, 90);
+            ctx.fillText("angle: "+Math.round(angle*180/Math.PI)+" degrees", 10, 100);
         
             ctx.beginPath();
             ctx.lineWidth = 2;
@@ -201,18 +206,21 @@
             x = x+(velx*rate);
             
             vel=Math.sqrt(Math.pow(velx,2)+Math.pow(vely,2));
-            angle = cos(velx/vel);
+            angle = Math.cos(velx/vel);
+            if(vely<0){
+                angle *=-1;
+            }
             //mass[0],x[1],y[2],force[3],forceangle[4],vel[5],angle[6],frictionk[7],frictions[8],touch[9]
-            ob[0]=mass;
-            ob[1]=x;
-            ob[2]=y;
-            ob[3]=force;
-            ob[4]=forceangle;
-            ob[5]=vel;
-            ob[6]=angle;
-            ob[7]=frictionk;
-            ob[8]=frictions;
-            ob[9]=touch;
+            obj[i][0]=mass;
+            obj[i][1]=x;
+            obj[i][2]=y;
+            obj[i][3]=force;
+            obj[i][4]=forceangle;
+            obj[i][5]=vel;
+            obj[i][6]=angle;
+            obj[i][7]=frictionk;
+            obj[i][8]=frictions;
+            obj[i][9]=touch;
         }
         
         function keyLogic() {
