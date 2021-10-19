@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<title>temp</title>
+<html lang="en">
+
+<head>
+    
+    
+	<meta charset="utf-8" />
+	<p>\/ :O Look there is stuff here! :D \/</p>
+    <h1 id = "vars"></h1>
+    <h1 id = 'test'></h1>
+	<style>
+		* {
+			padding: 0;
+			margin: 0;
+		}
+
+		canvas {
+			background: #eee;
+			display: block;
+			margin: 0 auto;
+		}
+	</style>
+</head>
+
+<div style="display:none;">
+</div>
+
+<body>
+	<h1 id="coords"></h1>
+	<p id="log"></p>
+	<canvas id="myCanvas" width="1080" height="980"></canvas>
+    
+	<script>
+     window.onerror = function (msg, url, num) {
+    alert("Error: " + msg + "\nURL: " + url + "\nLine: " + num);
+    return true;
+     }
+		var canvas = document.getElementById("myCanvas");
+		var ctx = canvas.getContext("2d");
+		canvas.height = window.innerHeight;
+		canvas.width = window.innerWidth;
+
+		//image stuff
+		const images = {};
+		images.meadow = new Image();
+		images.meadow.src= "Images/Meadow.png";
+		images.player = new Image();
+		images.player.src = "Images/CharacterSpriteSheet.png";
+
+		const playerWidth = '180';
+		const playerHeight = '341.25';
+		var tiles = [[1,1,1,1,1,1],
+					[1,1,1,1,1,1],
+					[1,1,1,1,1,1],
+					[1,1,1,1,1,1]];
+        
+		var pressedKeys = {};
+        
+        const sqrttwo = Math.sqrt(2)/2;
+		let playerFrameX = 0;
+		let playerFrameY = 0;
+		let playerX = 0;
+		let playerY = 0;
+        let centerX = canvas.width/2-(playerWidth/2);
+        let centerY = canvas.height/2-(playerHeight/2);
+		const playerSpeed = 6;
+		var motion = false;
+		var animationSpeed=150;
+
+        //type,posx,posy,width,height
+        var obj = [[1,centerX,centerY,50,50,]];
+        //type([0]),posx([1]),posy([2]),animationx([3]), animationy([4]), motion([5]),goalx([6]),goaly([7])
+        let ai = [[1,Math.round(Math.random()*1000),Math.round(Math.random()*1000),0,0,0,Math.round(Math.random()*1000),Math.round(Math.random()*1000)]];
+        
+		function drawSprite(img, sX, sY, sW, sH, dX, dY, dW, dH) {
+			ctx.drawImage(img, sX, sY, sW, sH, dX, dY, dW, dH);
+		}
+
+		function draw() {
+            
+			keyLogic();
+            aim();
+            
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+			for(var i =0; i<tiles.length;i++){
+				for(var j = 0;j<tiles[i].length;j++){
+				if(tiles[i][j] == 1){
+					drawSprite(images.meadow,0,0,640,640,playerX+(320*j),playerY+(320*i),640/2,640/2);
+				}
+			}
+			}
+            ctx.beginPath();
+            for(var i = 0;i<obj.length;i++){
+                if(obj[i][0] ==1){
+                    ctx.fillStyle = "red";
+			        ctx.fill();
+                    ctx.rect(obj[i][1]+playerX,obj[i][2]+playerY,obj[i][3],obj[i][4]);
+                   }
+            }
+            for(var i = 0;i<ai.length;i++){
+                if(ai[i][0]==1){
+                    drawSprite(images.player, playerWidth*ai[i][3], playerHeight*ai[i][4],playerWidth,playerHeight,ai[i][1]+playerX,ai[i][2]+playerY,playerWidth/2,playerHeight/2);
+                }
+            }
+            ctx.stroke();
+			drawSprite(images.player, playerWidth * playerFrameX, playerHeight * playerFrameY, playerWidth, playerHeight, centerX,                         canvas.height/2-(playerHeight/2), playerWidth/2, playerHeight/2);
+            
+			
+
+		}
+		function animate() {
+			if (motion == true) {
+				if (playerFrameX < 5) {
+					playerFrameX++;
+				}
+				else {
+					playerFrameX = 0;
+				}
+			}
+			else{
+				playerFrameX= false;
+			}
+		}
+        
+        function collisionCheck(){
+            for(var i = 0;i<obj.length;i++){
+                    if(obj[i][0] ==1){
+                        if((obj[i][1]+playerX) >= canvas.width/2-20||(obj[i][1]+obj[i][3]+playerX) <= canvas.width/2-(playerWidth/2-20)){
+                       return false;
+                    }
+                        else if(obj[i][2]+playerY >= canvas.height/2 || obj[i][2]+obj[i][4]+playerY <= canvas.height/2-(playerHeight/2-120)){
+                            return false;
+                        }
+            
+            }
+        }
+            return true;
+        }
+        
+        function printMousePos() {
+    var cursorX;
+    var cursorY;
+    document.onmousemove = function(e){
+    cursorX = e.pageX;
+    cursorY = e.pageY;
+}
+    document.getElementById('test').innerHTML = "x: " + cursorX + ", y: " + cursorY;
+}
+        
+		function keyLogic() {
+			if (pressedKeys["KeyW"]) {
+				motion = true;
+				if (pressedKeys["KeyA"]) {
+					playerFrameY = 7;
+					playerX += sqrttwo;
+					playerY += sqrttwo
+                    if(collisionCheck()){
+                      playerX -= sqrttwo;
+					playerY -= sqrttwo;  
+                    }
+				}
+				else if (pressedKeys["KeyD"]) {
+					playerFrameY = 6;
+					playerX -= sqrttwo;
+					playerY += sqrttwo;
+                    if(collisionCheck()){
+                      playerX += sqrttwo;
+					playerY -= sqrttwo;  
+                    }
+                   
+                }
+				else {
+					playerFrameY = 1;
+					playerY += 1;
+                    if(collisionCheck()){
+                      
+					playerY -= 1;  
+                    }
+                    
+			}
+                }
+			else if (pressedKeys["KeyS"]) {
+				motion = true;
+				if (pressedKeys["KeyA"]) {
+					playerFrameY = 4;
+					playerX += sqrttwo;
+					playerY -= sqrttwo;
+                    if(collisionCheck()){
+                      playerX -= sqrttwo;
+					playerY += sqrttwo;  
+                    }
+                   
+                }
+                   
+                
+				else if (pressedKeys["KeyD"]) {
+					playerFrameY = 5;
+					playerX -= sqrttwo;
+					playerY -= sqrttwo;
+                    if(collisionCheck()){
+                      playerX += sqrttwo;
+					playerY += sqrttwo;  
+                    }
+                   
+                }
+                    
+				
+				else {
+					playerFrameY = 0;
+					playerY -= 1;
+                    if(collisionCheck()){
+					playerY += 1;  
+                    }
+                   
+                }
+                    
+        }
+            
+			else if (pressedKeys["KeyA"]) {
+				motion = true;
+				playerFrameY = 2;
+				playerX += 1;
+                if(collisionCheck()){
+                      playerX -= 1;
+                    }
+                   
+            }
+                
+			
+			else if (pressedKeys["KeyD"]) {
+				motion = true;
+				playerFrameY = 3;
+				playerX -= 1;
+                if(collisionCheck()){
+                      playerX += 1;
+                    }
+			}
+			else{
+				motion = false;
+			}
+			if(pressedKeys["ShiftLeft"]){
+				animationSpeed = 100;
+			}
+            if(pressedKeys["Space"]){
+				for(let i =0;i<ai.length;i++){
+                 ai[i][6]=Math.round(centerX-playerX);
+                    ai[i][7]=Math.round(centerY-playerY);
+                }
+			}
+			else{
+				animationSpeed = 150;
+			}
+		}
+        ///*
+        function aim(){
+               for(var i = 0; i<ai.length;i++){
+                   
+                   if(ai[i][1]+playerX!=ai[i][6] || ai[i][2]+playerY != ai[i][7]){
+                      ai[i][5] = 1;
+                      if(Math.abs(Math.abs(ai[i][2]+playerY)-(ai[i][7]+playerY))>2){
+                      if(ai[i][2]+playerY > ai[i][7]+playerY){
+                          if(Math.abs(Math.abs(ai[i][1]+playerX)-(ai[i][6]+playerX))>2){
+                          if(ai[i][1]+playerX>ai[i][6]+playerX){
+                              ai[i][4]=7;
+                              ai[i][1]-= sqrttwo;
+                              ai[i][2]-= sqrttwo;
+                          }
+                          else if(ai[i][1]+playerX<ai[i][6]+playerX){
+                              ai[i][4]=6;
+                              ai[i][1]+= sqrttwo;
+                              ai[i][2]-= sqrttwo;
+                          }
+                          }
+                          else{
+                              ai[i][4]=1;
+                              ai[i][2]-=1;
+                          }
+                        }
+                       else if(ai[i][2]+playerY < ai[i][7]+playerY){
+                           if(Math.abs(Math.abs(ai[i][1]+playerX)-(ai[i][6]+playerX))>2){
+                               
+                           if(ai[i][1]+playerX >ai[i][6]+playerX){
+                               ai[i][4]=4;
+                               ai[i][1]-=sqrttwo;
+                               ai[i][2]+=sqrttwo;
+                           }
+                               
+                            else if(ai[i][1]+playerX<ai[i][6]+playerX){
+                                ai[i][4]=5;
+                                ai[i][1]+=sqrttwo;
+                                ai[i][2]+=sqrttwo;
+                            }
+                           
+                           }
+                           else{
+                            ai[i][4]=0;
+                               ai[i][2]+=1;
+                           }
+                       }
+                      }
+                       else if(Math.abs(Math.abs(ai[i][1]+playerX)-(ai[i][6]+playerX))>2){
+                       if(ai[i][1]+playerX>ai[i][6]+playerX){
+                           ai[i][4]=2;
+                           ai[i][1]-=1;
+                       }
+                       else if(ai[i][1]+playerX<ai[i][6]+playerX){
+                           ai[i][4]=3;
+                           ai[i][1]+=1;
+                        }
+                       }
+                       document.getElementById("vars").innerHTML = "aix: "+(ai[i][1]+playerX)+" aiy: "+(ai[i][2]+playerY)+" cenx: "+(Math.abs(Math.abs(ai[i][1]+playerX)-(ai[i][6]+playerX)))+" ceny: "+(Math.abs(Math.abs(ai[i][2]+playerY)-(ai[i][7]+playerY)));
+                      }
+                   
+               }
+        }
+        //*/
+		setInterval(animate, animationSpeed);
+		setInterval(draw, 5);
+
+		window.onkeyup = function(e) { pressedKeys[e.code] = false; }
+		window.onkeydown = function(e) { pressedKeys[e.code] = true; }
+        
+        
+		
+	</script>
+</body>
+
+</html>
