@@ -1,256 +1,259 @@
 <!DOCTYPE html>
-<title>temp</title>
+<title>Physics Simulation</title>
 <html lang="en">
 
 <head>
-    
-    
-	<meta charset="utf-8" />
-	<p>\/ :O Look there is stuff here! :D \/</p>
-    <h1 id = "vars"></h1>
-    <h1 id = 'test'></h1>
-	<style>
-		* {
-			padding: 0;
-			margin: 0;
-		}
 
-		canvas {
-			background: #eee;
-			display: block;
-			margin: 0 auto;
-		}
-	</style>
+
+    <meta charset="utf-8" />
+
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        canvas {
+            background: #eee;
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
 </head>
 
 <div style="display:none;">
 </div>
 
 <body>
-	<h1 id="coords"></h1>
-	<p id="log"></p>
-	<canvas id="myCanvas" width="1080" height="980"></canvas>
-    
-	<script>
-        let scale = 5;
+    <h1 id="coords"></h1>
+    <p id="log"></p>
+    <canvas id="myCanvas" width="1080" height="980"></canvas>
+
+    <script>
+        window.onerror = function (msg, url, num) {
+            alert("Error: " + msg + "\nURL: " + url + "\nLine: " + num);
+            return true;
+        }
+        let scale = 15;
         let delay = 0;
         let selectobj = 0;
         var dx = 0;
         var dy = 0;
         var pressedKeys = {};
         var canvas = document.getElementById("myCanvas");
-		var ctx = canvas.getContext("2d");
-		canvas.height = window.innerHeight;
-		canvas.width = window.innerWidth;
-        //mass[0],x[1],y[2],force[3],forceangle[4],vel[5],velangle[6],frictionk[7],frictions[8],touch[9]
-        var obj = [[5, 0, canvas.height-(5/5*scale)-5, 0, 90*(Math.PI/180), 10*scale,60*Math.PI/180,0.5,0.7,false]];
-        
-        const rate = 0.005
+        var ctx = canvas.getContext("2d");
+        canvas.height = window.innerHeight;
+        canvas.width = window.innerWidth;
+        //mass[0],x[1],y[2],force[3],forceangle[4],vel[5],velangle[6],frictionk[7],frictions[8],touch[9],forcex[10],forcey[11],velx[12],vely[13],selected[14]
+        var obj = [[5, 30, canvas.height - (5 / 5 * scale) - 20, 0, 90 * (Math.PI / 180), 10 * scale, 0 * Math.PI / 180, 2000000, 0.7, false, 0, 0, 0, 0, true],
+        [5, 0, canvas.height - (5 / 5 * scale) - 20, 0, 90 * (Math.PI / 180), 10 * scale, 0 * Math.PI / 180, 2000000, 0.7, false, 0, 0, 0, 0, false],
+        [5, 0, canvas.height - (5 / 5 * scale), 0, 90 * (Math.PI / 180), 10 * scale, 90 * Math.PI / 180, 2000000, 0.7, false, 0, 0, 0, 0, false]];
 
-        //var mass = 5;
-        //let size = mass/5*scale;
-        //var x =0;
-        //var y = canvas.height-size-5;
-      
-        
-        var g = -9.8*scale;
-        
-        //var force = 0;
-        //let forceangle =90*(Math.PI/180);
-        //let forcex = force*Math.cos(forceangle);
-        //let forcey = force*Math.sin(forceangle)+(mass*g);
-        
-        //var angle = 60*(Math.PI/180);
-        //var vel = 100*scale;
-        //var velx = vel*Math.cos(angle);
-        //var vely = vel*Math.sin(angle);
-        
+        //length[0],x[1],y[2],maxT[3],rigid[5],attachedobj[6]
+        var string = [[30, 200, 300, 200, false, 1]];
+
+        const rate = 0.005
+        var g = -9.8 * scale;
         var bounce = 0.5;
-        let t=0;
-        //let frictionk = 2000000;
-        //let frictions = 0.7;
-        //let touch = false;
-        
-        
-        function draw(){
-            keyLogic();
-            
-            
-            
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            
-            for(let i = 0; i<obj.length;i++){
-             update(i);   
-            }
-            
-               
+        let t = 0;
+
+        for (let i = 0; i < obj.length; i++) {
+            obj[i][10] = obj[i][3] * Math.cos(obj[i][4]);
+            obj[i][11] = obj[i][3] * Math.sin(obj[i][4]) + (obj[i][0] * g);
+            obj[i][12] = obj[i][5] * Math.cos(obj[i][6])
+            obj[i][13] = obj[i][5] * Math.sin(obj[i][6])
         }
-        
-        
-        function update(i){
-            
-     
-		
-        let mass = obj[i][0];
-        let size = mass/5*scale;
-        var x =obj[i][1];
-        var y = obj[i][2];
-        
-        let force = obj[i][3];
-        let forceangle =obj[i][4];
-        let forcex = force*Math.cos(forceangle);
-        let forcey = force*Math.sin(forceangle)+(mass*g);
-        
-        let angle = obj[i][6];
-        let vel = obj[i][5];
-        let velx = vel*Math.cos(angle);
-        var vely = vel*Math.sin(angle);
-        
-        let frictionk = obj[i][7];
-        let frictions = obj[i][8];
-        let touch = obj[i][9];
-            
-            ctx.font = "10px Arial";
-            ctx.fillText("Diplacement X= "+Math.round((x-3)/scale)+"m", 10, 50);
-            ctx.font = "10px Arial";
-            ctx.fillText("Diplacement Y= "+Math.round(-1*(y-canvas.height)/scale) + "m", 10, 60);
-            ctx.fillText("Vel: "+Math.round((vel)/scale)+"m/s", 10, 70);
-            ctx.fillText("Velx: "+Math.round((velx)/scale)+"m/s", 10, 80);
-            ctx.fillText("Vely: "+Math.round((vely)/scale)+"m/s", 10, 90);
-            ctx.fillText("angle: "+Math.round(angle*180/Math.PI)+" degrees", 10, 100);
-        
+
+
+        function draw() {
+            keyLogic();
+
+
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+
+            for (let i = 0; i < obj.length; i++) {
+                if (i == selectobj) {
+                    obj[i][14] = true;
+                }
+                else {
+                    obj[i][14] = false;
+                }
+                update(i);
+            }
+
+
+        }
+
+
+        function update(i) {
+
+            let mass = obj[i][0];
+            let size = mass / 5 * scale;
+            var x = obj[i][1];
+            var y = obj[i][2];
+
+            let force = obj[i][3];
+            let forceangle = obj[i][4];
+            let forcex = obj[i][10];
+            let forcey = obj[i][11];
+
+            let angle = obj[i][6];
+            let vel = obj[i][5];
+            let velx = obj[i][12];
+            var vely = obj[i][13];
+
+            let frictionk = obj[i][7];
+            let frictions = obj[i][8];
+            let touch = obj[i][9];
+            if (obj[i][14] == true) {
+                ctx.font = "10px Arial";
+                ctx.fillText("Diplacement X= " + Math.round((x - 3) / scale) + "m", 10, 50);
+                ctx.font = "10px Arial";
+                ctx.fillText("Diplacement Y= " + Math.round(-1 * (y - canvas.height) / scale) + "m", 10, 60);
+                ctx.fillText("Vel: " + Math.round((vel) / scale) + "m/s", 10, 70);
+                ctx.fillText("Velx: " + Math.round((velx) / scale) + "m/s", 10, 80);
+                ctx.fillText("Vely: " + Math.round((vely) / scale) + "m/s", 10, 90);
+                ctx.fillText("angle: " + Math.round(angle * 180 / Math.PI) + " degrees", 10, 100);
+
+                ctx.beginPath();
+                ctx.lineWidth = 2;
+                ctx.moveTo(x + (size / 2), y + (size / 2));
+                ctx.lineTo(x + size / 2 + (forcex), y + (size / 2));
+                ctx.fillStyle = "green";
+                ctx.fill();
+                ctx.stroke();
+                ctx.closePath();
+
+                ctx.beginPath();
+                ctx.moveTo(x + (size / 2), y + (size / 2));
+                ctx.lineTo(x + size / 2, y - (forcey) + (size / 2));
+
+                ctx.fillStyle = "green";
+                ctx.fill();
+                ctx.stroke();
+                ctx.closePath();
+
+                ctx.beginPath();
+                ctx.moveTo(x + (size / 2), y + (size / 2));
+                ctx.lineWidth = 1;
+                ctx.lineTo(x + size / 2 + forcex + (force * Math.cos(forceangle)), y - (force * Math.sin(forceangle)) + (size / 2));
+
+                ctx.fillStyle = "green";
+                ctx.fill();
+                ctx.stroke();
+                ctx.closePath();
+            }
             ctx.beginPath();
-            ctx.lineWidth = 2;
-            ctx.moveTo(x+(size/2),y+(size/2));
-            ctx.lineTo(x+size/2+(forcex),y+(size/2));
-            
-            ctx.fillStyle = "green";
-            ctx.fill();
-            ctx.stroke();
-            ctx.closePath();
-            
-            ctx.beginPath();
-            ctx.moveTo(x+(size/2),y+(size/2));
-            ctx.lineTo(x+size/2,y-(forcey)+(size/2));
-            
-            ctx.fillStyle = "green";
-            ctx.fill();
-            ctx.stroke();
-            ctx.closePath();
-            
-            
-            ctx.beginPath();
-            ctx.moveTo(x+(size/2),y+(size/2));
-            ctx.lineWidth = 1;
-            ctx.lineTo(x+size/2+forcex+(force*Math.cos  (forceangle)),y-(force*Math.sin(forceangle))+(size/2));
-            
-            ctx.fillStyle = "green";
-            ctx.fill();
-            ctx.stroke();
-            ctx.closePath();
-                
-            ctx.beginPath();
-            ctx.rect(x,y,size,size);
+            ctx.rect(x, y, size, size);
             ctx.fillStyle = "red";
-			ctx.fill();
+            ctx.fill();
             ctx.stroke();
             ctx.closePath();
-            
-            forcex=force*Math.cos(forceangle);
-            velx=velx+(forcex/mass)*rate;
-            
-            if (y+size>=canvas.height && ((force*Math.sin(forceangle)+(mass*g)<0) || vely<0)){
-                
-                forcey=force*Math.sin(forceangle)+(mass*g);
-                
-                //if(y-((forcey/mass)*0.05)+size>=canvas.height){
-                y=canvas.height-size;
-                    vely=0;
-                //}
-                //else{
-                        //y=y-(vely*0.05);
-                    //vely = vely + (forcey/mass)*0.05;
-                //}
-                if(velx!=0/*Math.abs(velx)>0.5*scale*/){
-                
-                forcex = (force*Math.cos(forceangle))+((velx/Math.abs(velx)*-1)*frictionk*mass*(g*-1));
-                    if(0>Math.abs(velx)-Math.abs(forcex/mass*rate)){
-                     velx=0   
+
+            forcex = force * Math.cos(forceangle);
+            velx = velx + (forcex / mass) * rate;
+            //length[0],x[1],y[2],maxT[3],rigid[5],attachedobj[6]
+            /*for(let j = 0;i<string.length;i++){
+                    if(string[j][6]==i){
+                        if(Math.sqrt(Math.pow(x-string[j][1],2)+Math.pow(y-string[j][2],2))>=string[j][0]){
+                                    if(stringx)
+                            }
                     }
-                    else{
-                    velx=velx+(forcex/mass)*rate;
+                }*/
+
+            if (y + size >= canvas.height && ((force * Math.sin(forceangle) + (mass * g) < 0) && vely < 0)) {
+
+                forcey = force * Math.sin(forceangle) + (mass * g);
+
+
+                y = canvas.height - size;
+                vely = 0;
+                if (velx != 0 && vely <= 0) {
+
+                    forcex = (force * Math.cos(forceangle)) + ((velx / Math.abs(velx) * -1) * frictionk * mass * (g * -1));
+                    if (0 > Math.abs(velx) - Math.abs(forcex / mass * rate)) {
+                        velx = 0
                     }
-                    
+                    else {
+                        velx = velx + (forcex / mass) * rate;
+                    }
+
                 }
-                
-                else{
-                    
-                    if(Math.abs(force*Math.cos(forceangle))<Math.abs(frictions*mass*g)){
-                        forcex=0;
-                        velx=0
+
+                else {
+
+                    if (Math.abs(force * Math.cos(forceangle)) < Math.abs(frictions * mass * g)) {
+                        forcex = 0;
+                        velx = 0
                     }
                 }
-                
+
                 touch = true;
             }
-            else{
-                forcey = force*Math.sin(forceangle)+(mass*g);
-                y=y-(vely*rate);
+            else {
+                forcey = force * Math.sin(forceangle) + (mass * g);
+                y = y - (vely * rate);
                 touch = false;
-            
-            vely = vely + (forcey/mass)*rate;
+
+                vely = vely + (forcey / mass) * rate;
             }
-            
-            
-            x = x+(velx*rate);
-            
-            vel=Math.sqrt(Math.pow(velx,2)+Math.pow(vely,2));
-            angle = Math.cos(velx/vel);
-            if(vely<0){
-                angle *=-1;
-            }
+
+
+
+            x = x + (velx * rate);
+
+            vel = Math.sqrt(Math.pow(velx, 2) + Math.pow(vely, 2));
+            //angle = Math.cos(velx/vel);
             //mass[0],x[1],y[2],force[3],forceangle[4],vel[5],angle[6],frictionk[7],frictions[8],touch[9]
-            obj[i][0]=mass;
-            obj[i][1]=x;
-            obj[i][2]=y;
-            obj[i][3]=force;
-            obj[i][4]=forceangle;
-            obj[i][5]=vel;
-            obj[i][6]=angle;
-            obj[i][7]=frictionk;
-            obj[i][8]=frictions;
-            obj[i][9]=touch;
+            obj[i][0] = mass;
+            obj[i][1] = x;
+            obj[i][2] = y;
+            obj[i][3] = force;
+            obj[i][4] = forceangle;
+            obj[i][5] = vel;
+            obj[i][6] = angle;
+            obj[i][7] = frictionk;
+            obj[i][8] = frictions;
+            obj[i][9] = touch;
+            obj[i][10] = forcex;
+            obj[i][11] = forcey;
+            obj[i][12] = velx;
+            obj[i][13] = vely;
         }
-        
+
         function keyLogic() {
-            delay-=1;
-			if (pressedKeys["KeyW"]) {
-				obj[selectobj][3]+=1;
-                }
+            delay -= 1;
+            if (pressedKeys["KeyW"]) {
+                obj[selectobj][3] += 1;
+            }
             if (pressedKeys["KeyS"]) {
-				obj[selectobj][3]-=1;
-                }   
+                obj[selectobj][3] -= 1;
+            }
             if (pressedKeys["KeyA"]) {
-				obj[selectobj][4]+=0.01;
-                }
-            
+                obj[selectobj][4] += 0.01;
+            }
+
             if (pressedKeys["KeyD"]) {
-				obj[selectobj][4]-=0.01;
-                }
-            if(pressedKeys["KeyX"]){
-                obj[selectobj][3]= 0;
-                obj[selectobj][4]=0;
+                obj[selectobj][4] -= 0.01;
             }
-            if(pressedKeys["KeyE"]){
-                x=canvas.width/2;
+            if (pressedKeys["KeyX"]) {
+                obj[selectobj][3] = 0;
+                obj[selectobj][4] = 0;
             }
-            if(pressedKeys["Key1"]){
-             selectobj=0;   
+            if (pressedKeys["KeyE"]) {
+                x = canvas.width / 2;
+            }
+            if (pressedKeys["Key1"]) {
+                selectobj = 0;
+            }
+            if (pressedKeys["Key2"]) {
+                selectobj = 1;
             }
         }
-        window.onkeyup = function(e) { pressedKeys[e.code] = false; }
-		window.onkeydown = function(e) { pressedKeys[e.code] = true; }
-        
+        window.onkeyup = function (e) { pressedKeys[e.code] = false; }
+        window.onkeydown = function (e) { pressedKeys[e.code] = true; }
+
         setInterval(draw, 5);
     </script>
