@@ -34,7 +34,7 @@
             alert("Error: " + msg + "\nURL: " + url + "\nLine: " + num);
             return true;
         }
-        let scale = 15;
+        let scale = 5;
         let delay = 0;
         let selectobj = 0;
         var dx = 0;
@@ -45,9 +45,12 @@
         canvas.height = window.innerHeight;
         canvas.width = window.innerWidth;
         //mass[0],x[1],y[2],force[3],forceangle[4],vel[5],velangle[6],frictionk[7],frictions[8],touch[9],forcex[10],forcey[11],velx[12],vely[13],selected[14]
-        var obj = [[5, 30, canvas.height - (5 / 5 * scale) - 20, 0, 90 * (Math.PI / 180), 10 * scale, 0 * Math.PI / 180, 2000000, 0.7, false, 0, 0, 0, 0, true],
-        [5, 0, canvas.height - (5 / 5 * scale) - 20, 0, 90 * (Math.PI / 180), 10 * scale, 0 * Math.PI / 180, 2000000, 0.7, false, 0, 0, 0, 0, false],
-        [5, 0, canvas.height - (5 / 5 * scale), 0, 90 * (Math.PI / 180), 10 * scale, 90 * Math.PI / 180, 2000000, 0.7, false, 0, 0, 0, 0, false]];
+        var obj = [[5, 30, canvas.height - (5 / 5 * scale), 0, 90 * (Math.PI / 180), 100 * scale,80 * Math.PI / 180, 0.5, 0.7, false, 0, 0, 0, 0, true],
+        [5, 0, canvas.height - (5 / 5 * scale), 0, 90 * (Math.PI / 180), 69 * scale, 13 * Math.PI / 180, 0.7, 1.1, false, 0, 0, 0, 0, false],
+        [19, 0, canvas.height - (5 / 5 * scale), 0, 90 * (Math.PI / 180), 100 * scale, 90 * Math.PI / 180, 2000000, 0.7, false, 0, 0, 0, 0, false],
+        [2, 0, canvas.height - (5 / 5 * scale), 0, 90 * (Math.PI / 180), 30 * scale, 38 * Math.PI / 180, 0.7, 1.1, false, 0, 0, 0, 0, false],
+        [30, 0, canvas.height - (5 / 5 * scale), 0, 90 * (Math.PI / 180), 42 * scale, 51 * Math.PI / 180, 0.7, 1.1, false, 0, 0, 0, 0, false],
+        [5, 0, canvas.height - (5 / 5 * scale), 0, 90 * (Math.PI / 180), 8 * scale, 0 * Math.PI / 180, 0.7, 1.1, false, 0, 0, 0, 0, false]];
 
         //length[0],x[1],y[2],maxT[3],rigid[5],attachedobj[6]
         var string = [[30, 200, 300, 200, false, 1]];
