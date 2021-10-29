@@ -158,13 +158,19 @@
             forcex = force * Math.cos(forceangle);
             velx = velx + (forcex / mass) * rate;
             //length[0],x[1],y[2],maxT[3],rigid[5],attachedobj[6]
-            /*for(let j = 0;i<string.length;i++){
+            for(let j = 0;i<string.length;i++){
                     if(string[j][6]==i){
                         if(Math.sqrt(Math.pow(x-string[j][1],2)+Math.pow(y-string[j][2],2))>=string[j][0]){
-                                    if(stringx)
+												let cx=string[j][1];
+												let cy=string[j][2];
+												let r = string[j][0];
+												let m = vely/velx;
+                                    if(){
+													
+												}
                             }
                     }
-                }*/
+                }
 
             if (y + size >= canvas.height && ((force * Math.sin(forceangle) + (mass * g) < 0) && vely < 0)) {
 
@@ -208,7 +214,7 @@
             x = x + (velx * rate);
 
             vel = Math.sqrt(Math.pow(velx, 2) + Math.pow(vely, 2));
-            //angle = Math.cos(velx/vel);
+            angle = Math.atan(vely/velx);
             //mass[0],x[1],y[2],force[3],forceangle[4],vel[5],angle[6],frictionk[7],frictions[8],touch[9]
             obj[i][0] = mass;
             obj[i][1] = x;
